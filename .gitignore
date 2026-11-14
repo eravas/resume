@@ -1,2 +1,5 @@
 # .gitignore
+private.yamldist/
 private.yaml
+.venv/
+__pychache__/
