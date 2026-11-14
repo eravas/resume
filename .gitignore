@@ -1,5 +1,5 @@
 # .gitignore
-private.yamldist/
+dist/
 private.yaml
 .venv/
 __pychache__/
