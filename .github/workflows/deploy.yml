@@ -1,0 +1,36 @@
+name: deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:          # adds a manual "Run workflow" button
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+      url: https://eravas.ca/resume/
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate resume.yaml
+        run: pipx run check-jsonschema --schemafile resume.schema.json resume.yaml
+
+      - name: Build (placeholder)
+        run: |
+          mkdir -p dist/resume
+          echo '<!doctype html><title>Résumé</title><p>Coming soon.</p>' > dist/resume/index.html
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
