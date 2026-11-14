@@ -1,0 +1,17 @@
+attrs==26.1.0
+certifi==2026.10.23
+charset-normalizer==3.5.2
+check-jsonschema==0.39.0
+click==8.5.1
+idna==3.20
+Jinja2==3.1.6
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+MarkupSafe==3.0.4
+PyYAML==6.0.3
+referencing==0.37.0
+regress==2026.9.1
+requests==2.34.2
+rpds-py==2026.9.1
+ruamel.yaml==0.19.1
+urllib3==2.8.0
