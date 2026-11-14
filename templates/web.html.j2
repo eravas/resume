@@ -77,11 +77,11 @@ footer a{text-decoration:none}
 .scroller .cols{flex:1 1 auto}
 .scroller::after{content:"";position:absolute;top:0;right:0;bottom:0;width:96px;pointer-events:none;background:linear-gradient(to right,transparent,var(--bg));opacity:0;transition:opacity .25s}
 .scroller.has-next::after{opacity:1}
-.nudge{display:none;position:absolute;bottom:28px;z-index:1;align-items:center;gap:10px;min-height:44px;min-width:44px;padding:0 14px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.nudges{position:absolute;inset:0;z-index:1;pointer-events:none;display:flex;justify-content:space-between;align-items:flex-start;padding:24px 28px}
+.nudge{display:none;position:sticky;top:24px;pointer-events:auto;align-items:center;gap:10px;min-height:44px;min-width:44px;padding:0 14px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 .nudge:hover{background:var(--ink);color:var(--bg)}
 .nudge:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.nudge--next{right:28px}
-.nudge--prev{left:28px}
+.nudge--next{margin-left:auto}
 .has-next .nudge--next,.has-prev .nudge--prev{display:inline-flex}
 @media (prefers-reduced-motion: no-preference){.has-next .nudge--next svg{animation:nudgebob 2.4s ease-in-out infinite}}
 @keyframes nudgebob{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
@@ -97,7 +97,7 @@ footer a{text-decoration:none}
 .strip-on .hcol{display:none}
 .band{flex-direction:column;min-height:0}
 .sechead,.strip-on .sechead{position:static;width:auto;height:auto;clip:auto;overflow:visible;flex:none;writing-mode:horizontal-tb;white-space:normal;font-size:56px;line-height:1.05;padding:28px 20px 20px;border-right:0;border-bottom:1px solid var(--rule)}
-.scroller::after,.nudge{display:none !important}
+.scroller::after,.nudges{display:none !important}
 .cols{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:minmax(0,1fr);overflow-x:visible}
 .col,.col--wide{grid-column:auto;border-right:0;border-bottom:1px solid var(--faint);padding:28px 20px 32px}
 .ttl{min-height:0}
@@ -175,8 +175,10 @@ footer{padding:24px 20px 32px}
     </article>
     {%- endfor %}
   </div>
+  <div class="nudges">
   <button type="button" class="nudge nudge--prev mono" data-dir="-1" aria-label="Scroll projects left"><svg aria-hidden="true" width="44" height="14" viewBox="0 0 44 14" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M44 7H2M8 1 2 7l6 6"/></svg></button>
   <button type="button" class="nudge nudge--next mono" data-dir="1" aria-label="Scroll projects right"><span class="nudge-count"></span><svg aria-hidden="true" width="44" height="14" viewBox="0 0 44 14" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M0 7h42M36 1l6 6-6 6"/></svg></button>
+  </div>
   </div>
 </section>
 {% endif %}
@@ -199,8 +201,10 @@ footer{padding:24px 20px 32px}
     </article>
     {%- endfor %}
   </div>
+  <div class="nudges">
   <button type="button" class="nudge nudge--prev mono" data-dir="-1" aria-label="Scroll experience left"><svg aria-hidden="true" width="44" height="14" viewBox="0 0 44 14" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M44 7H2M8 1 2 7l6 6"/></svg></button>
   <button type="button" class="nudge nudge--next mono" data-dir="1" aria-label="Scroll experience right"><span class="nudge-count"></span><svg aria-hidden="true" width="44" height="14" viewBox="0 0 44 14" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M0 7h42M36 1l6 6-6 6"/></svg></button>
+  </div>
   </div>
 </section>
 {% endif %}
@@ -227,8 +231,10 @@ footer{padding:24px 20px 32px}
     </article>
     {%- endfor %}
   </div>
+  <div class="nudges">
   <button type="button" class="nudge nudge--prev mono" data-dir="-1" aria-label="Scroll education left"><svg aria-hidden="true" width="44" height="14" viewBox="0 0 44 14" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M44 7H2M8 1 2 7l6 6"/></svg></button>
   <button type="button" class="nudge nudge--next mono" data-dir="1" aria-label="Scroll education right"><span class="nudge-count"></span><svg aria-hidden="true" width="44" height="14" viewBox="0 0 44 14" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M0 7h42M36 1l6 6-6 6"/></svg></button>
+  </div>
   </div>
 </section>
 {% endif %}
@@ -265,8 +271,10 @@ footer{padding:24px 20px 32px}
     </div>
     {%- endfor %}
   </div>
+  <div class="nudges">
   <button type="button" class="nudge nudge--prev mono" data-dir="-1" aria-label="Scroll skills left"><svg aria-hidden="true" width="44" height="14" viewBox="0 0 44 14" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M44 7H2M8 1 2 7l6 6"/></svg></button>
   <button type="button" class="nudge nudge--next mono" data-dir="1" aria-label="Scroll skills right"><span class="nudge-count"></span><svg aria-hidden="true" width="44" height="14" viewBox="0 0 44 14" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M0 7h42M36 1l6 6-6 6"/></svg></button>
+  </div>
   </div>
 </section>
 {% endif %}
@@ -294,7 +302,13 @@ footer{padding:24px 20px 32px}
     var n = bands.length, t = 0;
     for (var i = 0; i < n; i++) {
       var r = bands[i].getBoundingClientRect();
-      if (r.top <= 0) t = i + Math.min(1, -r.top / Math.max(1, r.height));
+      // Locked while the band fills the screen; moves only while its bottom
+      // edge (= the next band's top) travels up through the viewport.
+      if (r.top <= 0) {
+        var vh = window.innerHeight;
+        var p = (-r.top - Math.max(0, r.height - vh)) / vh;
+        t = i + Math.max(0, Math.min(1, p));
+      }
     }
     t = Math.min(t, n - 1);
     strip.style.transform = 'translateY(' + (-(n - 1 - t) * window.innerHeight) + 'px)';
