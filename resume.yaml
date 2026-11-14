@@ -19,7 +19,7 @@ basics:
   name: Harsh Patel
   headline: Embedded systems engineer, schematic to firmware
   location: Canada
-  work_authorization: Open to roles in Canada and the USA; no sponsorship required
+  work_authorization: Open to roles in Canada and the USA;
   contact:
     - id: email
       kind: email
