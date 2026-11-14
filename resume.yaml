@@ -89,7 +89,7 @@ projects:
       Open-source handheld e-reader and music player: custom hardware (Tome)
       and bare-metal C firmware (Tavernkeep) for the RP2350.
     role: Solo — hardware & firmware
-    start: "YYYY-MM"            # TODO
+    start: "2025-12"
     end: present
     tags: [embedded, hardware, firmware]
     draft: false
