@@ -94,7 +94,7 @@ projects:
     tags: [embedded, hardware, firmware]
     draft: false
     links:
-      - { label: Tome, url: https://github.com/rien-et-la-reine/tome }
+      - { label: Hardware, url: https://github.com/rien-et-la-reine/tome }
       - { label: Firmware, url: https://github.com/rien-et-la-reine/tavernkeep }
       - { label: EPUB library, url: https://github.com/rien-et-la-reine/bartap }
     highlights:
