@@ -2,7 +2,7 @@ name: deploy
 on:
   push:
     branches: [main]
-  workflow_dispatch:          # adds a manual "Run workflow" button
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,18 +15,24 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
-      name: prod
+      name: production
       url: https://eravas.ca/resume/
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0          # full history, so "Updated <date>" comes from the last resume.yaml commit
 
-      - name: Validate resume.yaml
-        run: pipx run check-jsonschema --schemafile resume.schema.json resume.yaml
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
 
-      - name: Build (placeholder)
-        run: |
-          mkdir -p dist/resume
-          echo '<!doctype html><title>Résumé</title><p>Coming soon.</p>' > dist/resume/index.html
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Build web résumé
+        run: python tools/build.py --profile full
+        # add  --pdf-url /resume.pdf  once the PDF is part of the build
 
       - name: Deploy
         uses: cloudflare/wrangler-action@v4

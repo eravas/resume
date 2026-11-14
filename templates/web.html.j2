@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{{ basics.name }} — Résumé</title>
+{% if basics.headline %}<meta name="description" content="{{ basics.name }} — {{ basics.headline }}">{% endif %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#F8F5F0;--ink:#171310;--muted:#5A524C;--rule:#171310;--faint:#CBC3BA;--word:168px}
+@media (prefers-color-scheme: dark){:root{--bg:#171310;--ink:#F8F5F0;--muted:#A89E95;--rule:#4A423B;--faint:#3A332D}}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Newsreader',Georgia,serif}
+a{color:inherit}
+a:hover{opacity:.65}
+a:focus-visible,.cols:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.didone{font-family:'Bodoni Moda','Didot',Georgia,serif}
+.label{margin:0;font-size:12px;font-weight:500;line-height:1.7;letter-spacing:.08em;text-transform:uppercase}
+.muted{color:var(--muted)}
+
+.page{display:flex;align-items:flex-start;min-height:100vh}
+
+/* left rail */
+.rail{flex:0 0 64px;align-self:flex-start;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;gap:40px;padding:20px 0;border-right:1px solid var(--rule)}
+.mark{display:block;line-height:0}
+.mark img{display:block;width:44px;height:44px;object-fit:contain}
+.vlink{writing-mode:vertical-rl;display:inline-flex;align-items:center;min-width:44px;min-height:44px;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
+
+/* counter-scrolling heading column (enabled by JS via .strip-on) */
+.hcol{display:none}
+.strip-on .hcol{display:block;flex:0 0 var(--word);position:sticky;top:0;height:100vh;overflow:hidden;border-right:1px solid var(--rule)}
+.strip{will-change:transform}
+.hslot{height:100vh;padding-top:28px;overflow:hidden;writing-mode:vertical-rl;white-space:nowrap;font-size:clamp(84px,15vh,148px);font-weight:400;line-height:var(--word);opacity:.14;transition:opacity .35s ease}
+.hslot.is-active{opacity:1}
+
+main{flex:1 1 auto;min-width:0}
+
+/* bands; default (no JS / reduced motion): heading sits inside its band */
+.band{min-height:100vh;display:flex;border-bottom:1px solid var(--rule)}
+.sechead{flex:0 0 var(--word);margin:0;padding-top:28px;overflow:hidden;writing-mode:vertical-rl;white-space:nowrap;font-size:clamp(84px,15vh,148px);font-weight:400;line-height:var(--word);border-right:1px solid var(--rule)}
+.sechead::after{content:"\2014";content:"\2014" / ""}
+.strip-on .sechead{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0;white-space:nowrap}
+
+.cols{flex:1 1 auto;min-width:0;display:grid;grid-auto-flow:column;grid-auto-columns:344px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--faint) transparent}
+.col{scroll-snap-align:start;padding:40px 32px 44px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:20px}
+.col--wide{grid-column:span 3;padding:40px 36px 36px;gap:22px}
+.ttl{margin:0;min-height:112px;font-size:29px;font-weight:500;line-height:1.25}
+.bullets{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:10px;font-size:16px;line-height:1.55;color:var(--muted)}
+
+/* intro */
+.name{margin:0;font-size:76px;font-weight:500;line-height:1;letter-spacing:-.01em}
+.headline{margin:0;font-size:24px;font-style:italic;font-weight:300;line-height:1.35}
+.contact{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;column-gap:28px}
+.contact a{display:inline-flex;align-items:center;min-height:44px;font-size:17px;color:var(--muted)}
+.serif-link{align-self:flex-start;display:inline-flex;align-items:center;min-height:44px;font-size:22px;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
+.cue{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:14px;min-height:44px;padding-top:24px;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
+@keyframes cuebob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.cue svg{animation:cuebob 2.4s ease-in-out infinite}
+
+.certs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:28px}
+.certs h3{margin:0 0 10px;font-size:24px;font-weight:500;line-height:1.3}
+.skills{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--muted)}
+
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding:28px 36px 36px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+footer a{text-decoration:none}
+
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+@media (prefers-reduced-motion: reduce){.hslot{transition:none}.cue svg{animation:none}}
+
+/* phones */
+@media (max-width: 760px){
+.page{flex-direction:column;align-items:stretch}
+.rail{position:static;height:auto;flex:none;flex-direction:row;gap:20px;padding:12px 20px;border-right:0;border-bottom:1px solid var(--rule);overflow-x:auto}
+.vlink{writing-mode:horizontal-tb}
+.strip-on .hcol{display:none}
+.band{flex-direction:column;min-height:0}
+.sechead,.strip-on .sechead{position:static;width:auto;height:auto;clip:auto;overflow:visible;flex:none;writing-mode:horizontal-tb;white-space:normal;font-size:56px;line-height:1.05;padding:28px 20px 20px;border-right:0;border-bottom:1px solid var(--rule)}
+.cols{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:minmax(0,1fr);overflow-x:visible}
+.col,.col--wide{grid-column:auto;border-right:0;border-bottom:1px solid var(--faint);padding:28px 20px 32px}
+.ttl{min-height:0}
+.name{font-size:56px}
+footer{padding:24px 20px 32px}
+}
+</style>
+</head>
+<body>
+<div id="top" class="page">
+
+<nav class="rail" aria-label="Sections">
+  <a class="mark" href="#top" aria-label="Back to top"><img src="assets/logo.png" alt="" width="44" height="44"></a>
+  {%- for b in bands if b.id != "intro" %}
+  <a class="mono vlink" href="#{{ b.id }}">{{ b.word }}</a>
+  {%- endfor %}
+  {%- if pdf_url %}
+  <a class="mono vlink" href="{{ pdf_url }}">PDF</a>
+  {%- endif %}
+</nav>
+
+<div class="hcol" aria-hidden="true">
+  <div class="strip" style="transform: translateY(calc(-{{ bands|length - 1 }} * 100vh))">
+    {%- for b in bands|reverse %}
+    <div class="didone hslot{% if loop.last %} is-active{% endif %}">{{ b.word }}—</div>
+    {%- endfor %}
+  </div>
+</div>
+
+<main>
+
+<section id="intro" class="band" aria-labelledby="h-intro">
+  <h2 id="h-intro" class="didone sechead">Résumé</h2>
+  <div class="cols">
+    <div class="col col--wide">
+      <span class="mono label">00</span>
+      <h1 class="didone name">{{ basics.name }}</h1>
+      {% if basics.headline %}<p class="headline">{{ basics.headline }}</p>{% endif %}
+      {% if basics.work_authorization %}<p class="mono label">{{ basics.work_authorization }}</p>{% endif %}
+      <ul class="contact" aria-label="Contact">
+        {%- for c in basics.contact %}
+        <li><a href="{{ c | contact_href }}">{{ c.value }}</a></li>
+        {%- endfor %}
+      </ul>
+      {% if pdf_url %}<a class="didone serif-link" href="{{ pdf_url }}">download the pdf—</a>{% endif %}
+      {% if bands|length > 1 %}
+      <a class="mono cue" href="#{{ bands[1].id }}">
+        <svg aria-hidden="true" width="14" height="44" viewBox="0 0 14 44" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M7 0v42M1 36l6 6 6-6"/></svg>
+        Scroll to {{ bands[1].word | lower }}
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% if sections.projects %}
+<section id="projects" class="band" aria-labelledby="h-projects">
+  <h2 id="h-projects" class="didone sechead">Projects</h2>
+  <div class="cols" tabindex="0" aria-label="Projects">
+    {%- for p in sections.projects %}
+    <article class="col" id="{{ p.id }}">
+      <span class="mono label">{{ "%02d" | format(loop.index0) }}</span>
+      <h3 class="didone ttl">{{ p.name }}</h3>
+      <p class="mono label">{{ p.role }}{% if p.dates %}<br><span class="muted">{{ p.dates }}</span>{% endif %}</p>
+      {% if p.summary %}<p style="margin:0;font-size:16px;line-height:1.55">{{ p.summary | inline }}</p>{% endif %}
+      {% if p.highlights %}
+      <ul class="bullets">
+        {%- for h in p.highlights %}<li>{{ h.text | inline }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      {%- for l in p.links or [] %}
+      <a class="didone serif-link" href="{{ l.url }}">{{ l.label | lower }}—</a>
+      {%- endfor %}
+    </article>
+    {%- endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if sections.experience %}
+<section id="experience" class="band" aria-labelledby="h-experience">
+  <h2 id="h-experience" class="didone sechead">Experience</h2>
+  <div class="cols" tabindex="0" aria-label="Experience">
+    {%- for x in sections.experience %}
+    <article class="col" id="{{ x.id }}">
+      <span class="mono label">{{ "%02d" | format(loop.index0) }}</span>
+      <h3 class="didone ttl">{{ x.organization }}</h3>
+      <p class="mono label">{{ x.title }}<br><span class="muted">{{ x.dates }}{% if x.location %}<br>{{ x.location }}{% endif %}</span></p>
+      {% if x.highlights %}
+      <ul class="bullets">
+        {%- for h in x.highlights %}<li>{{ h.text | inline }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+    </article>
+    {%- endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if sections.education or sections.certifications %}
+<section id="education" class="band" aria-labelledby="h-education">
+  <h2 id="h-education" class="didone sechead">Education</h2>
+  <div class="cols" tabindex="0" aria-label="Education and certifications">
+    {%- for e in sections.education or [] %}
+    <article class="col" id="{{ e.id }}">
+      <span class="mono label">Education</span>
+      <h3 class="didone ttl">{{ e.institution }}</h3>
+      <p class="mono label">{{ e.degree }}<br><span class="muted">{{ e.dates }}{% if e.location %}<br>{{ e.location }}{% endif %}</span></p>
+      <p style="margin:0;font-size:16px;line-height:1.55" class="muted">
+        {%- if e.field %}<em>{{ e.field }}</em>{% endif %}
+        {%- for h in e.honors or [] %}<br>{{ h.text | inline }}{% endfor -%}
+      </p>
+      {% if e.highlights %}
+      <ul class="bullets">
+        {%- for h in e.highlights %}<li>{{ h.text | inline }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+    </article>
+    {%- endfor %}
+    {%- if sections.certifications %}
+    <article class="col" id="certifications">
+      <span class="mono label">Certifications</span>
+      <ul class="certs">
+        {%- for k in sections.certifications %}
+        <li>
+          <h3 class="didone">{% if k.url %}<a href="{{ k.url }}">{{ k.name }}</a>{% else %}{{ k.name }}{% endif %}</h3>
+          <p class="mono label">{{ k.issuer }}<br><span class="muted">Earned {{ k.date_display }}{% if k.expires_display %} · Expires {{ k.expires_display }}{% endif %}</span></p>
+        </li>
+        {%- endfor %}
+      </ul>
+    </article>
+    {%- endif %}
+  </div>
+</section>
+{% endif %}
+
+{% if sections.skills %}
+<section id="skills" class="band" aria-labelledby="h-skills">
+  <h2 id="h-skills" class="didone sechead">Skills</h2>
+  <div class="cols" tabindex="0" aria-label="Skills by area">
+    {%- for g in sections.skills %}
+    <div class="col">
+      <span class="mono label">{{ "%02d" | format(loop.index0) }}</span>
+      <h3 class="didone" style="margin:0;font-size:29px;font-weight:500;line-height:1.25">{{ g.label }}</h3>
+      <ul class="mono skills">
+        {%- for s in g["items"] %}<li>{{ s.name if s is mapping else s }}</li>{% endfor %}
+      </ul>
+    </div>
+    {%- endfor %}
+  </div>
+</section>
+{% endif %}
+
+<footer class="mono">
+  <span>Built from resume.yaml · Updated {{ meta.updated_display }}</span>
+  <a href="/">eravas.ca</a>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var strip = document.querySelector('.strip');
+  var bands = Array.prototype.slice.call(document.querySelectorAll('.band'));
+  // Slots are rendered last-band-first; reverse so slots[i] belongs to bands[i].
+  var slots = Array.prototype.slice.call(document.querySelectorAll('.hslot')).reverse();
+  var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var raf = 0, active = -1;
+
+  function sync() {
+    if (mq.matches || !strip || !bands.length) return;
+    var n = bands.length, t = 0;
+    for (var i = 0; i < n; i++) {
+      var r = bands[i].getBoundingClientRect();
+      if (r.top <= 0) t = i + Math.min(1, -r.top / Math.max(1, r.height));
+    }
+    t = Math.min(t, n - 1);
+    strip.style.transform = 'translateY(' + (-(n - 1 - t) * window.innerHeight) + 'px)';
+    var a = Math.round(t);
+    if (a !== active) {
+      for (var j = 0; j < slots.length; j++) slots[j].classList.toggle('is-active', j === a);
+      active = a;
+    }
+  }
+  function onScroll() {
+    if (!raf) raf = requestAnimationFrame(function () { raf = 0; sync(); });
+  }
+  // Reduced motion (or no JS): headings stay inside their bands and scroll with them.
+  function apply() {
+    root.classList.toggle('strip-on', !mq.matches);
+    active = -1;
+    sync();
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  if (mq.addEventListener) mq.addEventListener('change', apply);
+  else if (mq.addListener) mq.addListener(apply);
+  apply();
+})();
+</script>
+</body>
+</html>
