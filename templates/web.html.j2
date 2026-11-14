@@ -4,11 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/png" href="assets/favicon-light.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" href="assets/favicon-dark.png" media="(prefers-color-scheme: dark)">
 <title>{{ basics.name }} — Résumé</title>
 {% if basics.headline %}<meta name="description" content="{{ basics.name }} — {{ basics.headline }}">{% endif %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Germania+One&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 :root{--bg:#F8F5F0;--ink:#171310;--muted:#5A524C;--rule:#171310;--faint:#CBC3BA;--word:168px}
 @media (prefers-color-scheme: dark){:root{--bg:#171310;--ink:#F8F5F0;--muted:#A89E95;--rule:#4A423B;--faint:#3A332D}}
@@ -19,7 +21,7 @@ a{color:inherit}
 a:hover{opacity:.65}
 a:focus-visible,.cols:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
-.didone{font-family:'Germania One','UnifrakturMaguntia',Georgia,serif;font-weight:400 !important;font-synthesis:none}
+.didone{font-family:'Pirata One','UnifrakturMaguntia',Georgia,serif;font-weight:400 !important;font-synthesis:none}
 .label{margin:0;font-size:12px;font-weight:500;line-height:1.7;letter-spacing:.08em;text-transform:uppercase}
 .muted{color:var(--muted)}
 
@@ -28,7 +30,8 @@ a:focus-visible,.cols:focus-visible{outline:2px solid var(--ink);outline-offset:
 /* left rail */
 .rail{flex:0 0 64px;align-self:flex-start;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;gap:40px;padding:20px 0;border-right:1px solid var(--rule)}
 .mark{display:block;line-height:0}
-.mark img{display:block;width:44px;height:44px;object-fit:contain}
+.mark{color:var(--ink)}
+.mark .logo{display:block;width:44px;height:44px}
 .vlink{writing-mode:vertical-rl;display:inline-flex;align-items:center;min-width:44px;min-height:44px;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
 
 /* counter-scrolling heading column (enabled by JS via .strip-on) */
@@ -110,7 +113,7 @@ footer{padding:24px 20px 32px}
 <div id="top" class="page">
 
 <nav class="rail" aria-label="Sections">
-  <a class="mark" href="#top" aria-label="Back to top"><img src="assets/logo.png" alt="" width="44" height="44"></a>
+  <a class="mark" href="#top" aria-label="Back to top">{% include "logo.svg" %}</a>
   {%- for b in bands if b.id != "intro" %}
   <a class="mono vlink" href="#{{ b.id }}">{{ b.word }}</a>
   {%- endfor %}
