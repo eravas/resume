@@ -25,8 +25,15 @@ from resolve import ROOT, ResolveError, resolve  # noqa: E402
 BANDS = (
     ("projects", "Projects", ("projects",)),
     ("experience", "Experience", ("experience",)),
-    ("education", "Education", ("education", "certifications")),
-    ("skills", "Skills", ("skills",)),
+    ("education", "Education", ("education",)),
+    ("skills", "Skills", ("skills", "certifications")),
+)
+
+# Skill groups that share one column on the web page, in display order.
+# Groups not listed here get their own column after these, in YAML order.
+SKILL_COLUMNS = (
+    ("languages", "tools"),
+    ("robotics-embedded",),
 )
 
 _LINK = re.compile(r"\[([^\]]+)\]\(((?:https?://|mailto:)[^)\s]+)\)")
@@ -52,6 +59,18 @@ def contact_href(c: dict) -> str:
     if kind == "phone":
         return "tel:" + re.sub(r"[^\d+]", "", value)
     return value
+
+
+def skill_columns(groups: list[dict]) -> list[list[dict]]:
+    by_id = {g.get("id"): g for g in groups}
+    used, cols = set(), []
+    for ids in SKILL_COLUMNS:
+        col = [by_id[i] for i in ids if i in by_id]
+        if col:
+            cols.append(col)
+            used.update(ids)
+    cols += [[g] for g in groups if g.get("id") not in used]
+    return cols
 
 
 def main(argv=None) -> int:
@@ -92,6 +111,7 @@ def main(argv=None) -> int:
         sections=sections,
         meta=data["meta"],
         bands=bands,
+        skill_columns=skill_columns(sections.get("skills") or []),
         pdf_url=args.pdf_url,
     )
 
