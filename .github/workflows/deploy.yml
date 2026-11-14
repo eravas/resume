@@ -18,7 +18,7 @@ jobs:
       name: prod
       url: https://eravas.ca/resume/
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Validate resume.yaml
         run: pipx run check-jsonschema --schemafile resume.schema.json resume.yaml
