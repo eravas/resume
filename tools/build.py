@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
-"""Build the web résumé.
+"""Build the web résumé and, optionally, the PDF.
 
-    python tools/build.py --profile full [--pdf-url /resume.pdf] [--out-dir dist]
+    python tools/build.py                          # web only (profile: full)
+    python tools/build.py --pdf public             # web + dist/resume.pdf
+    python tools/build.py --pdf embedded --no-web  # tailored PDF -> out/
 
-Writes <out-dir>/resume/index.html and copies static/ next to it.
-Omit --pdf-url until the PDF is actually deployed: the page then hides
-its PDF links instead of pointing at a 404.
+Web: <out-dir>/resume/index.html, with static/ copied next to it.
+PDF: the "public" profile goes to <out-dir>/resume.pdf (deployed) and must
+not contain a phone number; any other profile goes to out/resume-<profile>.pdf
+(gitignored, for applications, private.yaml merged in when present).
 """
 from __future__ import annotations
 
 import argparse
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -19,6 +23,7 @@ from jinja2 import Environment, FileSystemLoader
 from markupsafe import Markup, escape
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import json  # noqa: E402
 from resolve import ROOT, ResolveError, resolve  # noqa: E402
 
 # Web layout: which bands exist and what their big words say.
@@ -73,22 +78,46 @@ def skill_columns(groups: list[dict]) -> list[list[dict]]:
     return cols
 
 
-def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--profile", default="full")
-    ap.add_argument("--pdf-url", default=None)
-    ap.add_argument("--out-dir", type=Path, default=ROOT / "dist")
-    args = ap.parse_args(argv)
-
-    warn = lambda msg: print(f"warning: {msg}", file=sys.stderr)
+def build_pdf(profile: str, out_dir: Path, warn) -> Path:
     private = ROOT / "private.yaml"
-    try:
-        data = resolve(ROOT / "resume.yaml", private if private.exists() else None,
-                       ROOT / "resume.schema.json", args.profile, "web", warn)
-    except ResolveError as e:
-        for prob in e.problems:
-            print(f"error: {prob}", file=sys.stderr)
-        return 1
+    data = resolve(ROOT / "resume.yaml", private if private.exists() else None,
+                   ROOT / "resume.schema.json", profile, "pdf", warn)
+
+    public = profile == "public"
+    if public and any(c.get("kind") == "phone" for c in data["basics"]["contact"]):
+        raise ResolveError(["the public PDF would contain a phone number; "
+                            "exclude it in the 'public' profile"])
+
+    scratch = ROOT / "build"
+    scratch.mkdir(exist_ok=True)
+    data_file = scratch / f"resolved-{profile}.json"
+    data_file.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    out = out_dir / "resume.pdf" if public else ROOT / "out" / f"resume-{profile}.pdf"
+    out.parent.mkdir(parents=True, exist_ok=True)
+
+    typst = shutil.which("typst")
+    if typst is None:
+        raise ResolveError(["typst not found on PATH (https://github.com/typst/typst#installation)"])
+    cmd = [typst, "compile", "--root", str(ROOT),
+           "--input", f"data=/{data_file.relative_to(ROOT).as_posix()}"]
+    fonts = ROOT / "fonts"
+    if fonts.is_dir():
+        cmd += ["--font-path", str(fonts)]
+    cmd += [str(ROOT / "templates" / "resume.typ"), str(out)]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.stderr.strip():
+        print(result.stderr.strip(), file=sys.stderr)
+    if result.returncode != 0:
+        raise ResolveError([f"typst failed (exit {result.returncode})"])
+    print(f"wrote {out}", file=sys.stderr)
+    return out
+
+
+def build_web(profile: str, out_dir: Path, pdf_url: str | None, warn) -> None:
+    private = ROOT / "private.yaml"
+    data = resolve(ROOT / "resume.yaml", private if private.exists() else None,
+                   ROOT / "resume.schema.json", profile, "web", warn)
 
     sections = data["sections"]
     bands = [{"id": "intro", "word": "Résumé"}] + [
@@ -112,16 +141,42 @@ def main(argv=None) -> int:
         meta=data["meta"],
         bands=bands,
         skill_columns=skill_columns(sections.get("skills") or []),
-        pdf_url=args.pdf_url,
+        pdf_url=pdf_url,
     )
 
-    out = args.out_dir / "resume"
+    out = out_dir / "resume"
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(html, encoding="utf-8")
     static = ROOT / "static"
     if static.is_dir():
         shutil.copytree(static, out, dirs_exist_ok=True)
     print(f"wrote {out / 'index.html'}", file=sys.stderr)
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--profile", default="full", help="web profile (default: full)")
+    ap.add_argument("--pdf", metavar="PROFILE", help="also build a PDF for this profile")
+    ap.add_argument("--no-web", action="store_true", help="skip the web page")
+    ap.add_argument("--pdf-url", default=None,
+                    help="link target for the PDF on the web page "
+                         "(default: /resume.pdf when --pdf public is built)")
+    ap.add_argument("--out-dir", type=Path, default=ROOT / "dist")
+    args = ap.parse_args(argv)
+
+    warn = lambda msg: print(f"warning: {msg}", file=sys.stderr)
+    try:
+        pdf_url = args.pdf_url
+        if args.pdf:
+            build_pdf(args.pdf, args.out_dir, warn)
+            if args.pdf == "public" and pdf_url is None:
+                pdf_url = "/resume.pdf"
+        if not args.no_web:
+            build_web(args.profile, args.out_dir, pdf_url, warn)
+    except ResolveError as e:
+        for prob in e.problems:
+            print(f"error: {prob}", file=sys.stderr)
+        return 1
     return 0
 
 
