@@ -85,15 +85,42 @@ certifications:
 projects:
   - id: tome
     name: Tome
-    summary: Custom embedded e-reader and music player — RP2350 firmware, dual e-ink displays.
-    role: Solo
-    start: "2026-01"   # TODO: real start date
+    summary: >-
+      Open-source handheld e-reader and music player: custom hardware (Tome)
+      and bare-metal C firmware (Tavernkeep) for the RP2350.
+    role: Solo — hardware & firmware
+    start: "YYYY-MM"            # TODO
     end: present
     tags: [embedded, hardware, firmware]
-    draft: true        # flip to false once bullets are written
+    draft: false
     links:
-      - { label: Source, url: https://github.com/rien-et-la-reine }  # TODO: repo URL
-    highlights: []
+      - { label: Tome, url: https://github.com/rien-et-la-reine/tome }
+      - { label: Firmware, url: https://github.com/rien-et-la-reine/tavernkeep }
+      - { label: EPUB library, url: https://github.com/rien-et-la-reine/bartap }
+    highlights:
+      - id: tome-hw
+        text: >-
+          Designing the hardware around an RP2354B, with two 5.76" e-paper
+          panels side by side as a book spread and an outward-facing Memory
+          LCD; revision F moves to a 4-layer PCB with external PSRAM and
+          tool-free, swappable encoder modules.
+        tags: [hardware]
+      - id: tome-sd
+        text: >-
+          Wrote a bare-metal SPI SD card driver in C without third-party
+          libraries: initialization, single- and multi-block read/write, CRC
+          checking, and hot-removal handling through a single teardown path.
+      - id: tome-storage
+        text: >-
+          Built the storage stack on a block-device abstraction, with a
+          storage controller that hands the card between FatFs and TinyUSB so
+          the reader doubles as a USB mass-storage drive.
+      - id: tome-bartap
+        text: >-
+          Architected Bartap, an allocation-free EPUB parsing library in which
+          every output (containers, style changes, paragraphs, images) is a
+          record in one common format, parsed by a single reader.
+        tags: [software, embedded]
 
   - id: av-capstone
     name: Autonomous Vehicle Capstone Project
