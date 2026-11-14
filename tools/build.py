@@ -127,7 +127,7 @@ def build_web(profile: str, out_dir: Path, pdf_url: str | None, warn) -> None:
     ]
 
     env = Environment(
-        loader=FileSystemLoader(ROOT / "templates"),
+        loader=FileSystemLoader([ROOT / "templates", ROOT / "static"]),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
