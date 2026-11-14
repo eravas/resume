@@ -201,9 +201,8 @@ profiles:
     sections: [education, skills, certifications, projects, experience]
 
   public:
-    description: The PDF hosted at eravas.ca/resume.pdf — no phone number.
+    description: The PDF hosted at eravas.ca/resume.pdf.
     extends: full
-    exclude: [phone]
 
   embedded:
     description: Embedded / firmware / hardware roles.
