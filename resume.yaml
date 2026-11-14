@@ -1,0 +1,222 @@
+# yaml-language-server: $schema=./resume.schema.json
+#
+# Single source of truth for the web résumé (eravas.ca/resume/) and PDF builds.
+#
+# Conventions
+#   - Every selectable thing (entry, bullet, skill) may have an `id` and `tags`.
+#   - Untagged items are "core": included by every profile.
+#     Tagged items are included only when a profile asks for one of their tags.
+#   - `outputs` limits an item to [web] or [pdf]; omitted = both.
+#   - `draft: true` hides an item everywhere (work in progress).
+#   - Dates are QUOTED "YYYY-MM" (or "YYYY-MM-DD"). Unquoted YAML dates get
+#     coerced to date objects by some parsers and stay strings in others.
+#   - Text fields are plain text. A tiny inline subset is allowed:
+#     **bold**, *italic*, [label](url). The renderer owns all typography.
+
+schema_version: 1
+
+basics:
+  name: Harsh Patel
+  headline: Embedded systems engineer, schematic to firmware
+  location: Canada
+  work_authorization: Open to roles in Canada and the USA; no sponsorship required
+  contact:
+    - id: email
+      kind: email
+      value: harshnp02@gmail.com
+    - id: linkedin
+      kind: linkedin
+      value: linkedin.com/in/harsh-patel-0711/
+      url: https://www.linkedin.com/in/harsh-patel-0711/
+    - id: github
+      kind: github
+      value: github.com/eravas
+      url: https://github.com/eravas
+    - id: website
+      kind: website
+      value: eravas.ca
+      url: https://eravas.ca
+      outputs: [pdf]
+
+education:
+  - id: carleton-beng
+    institution: Carleton University
+    location: Ottawa, ON
+    degree: Bachelor of Engineering
+    field: Computer Systems Engineering
+    start: "2020-09"
+    end: "2026-02"
+    honors:
+      - text: Dean's Honour List, 2020–2021
+
+skills:
+  - id: languages
+    label: Languages
+    items:
+      - Python
+      - C++
+      - C
+  - id: robotics-embedded
+    label: Robotics/Embedded
+    items:
+      - { name: ROS 2, tags: [robotics] }
+      - { name: Nav2, tags: [robotics] }
+      - Raspberry Pi
+      - NVIDIA Jetson
+      - { name: LiDAR, tags: [robotics] }
+  - id: tools
+    label: Tools
+    items:
+      - Linux
+      - Git
+      - SQLite
+      - { name: Firebase, tags: [software] }
+      - { name: KiCad, tags: [embedded, hardware] }
+      - { name: Fusion 360, tags: [hardware] }
+      - { name: OrCAD PSpice, tags: [hardware] }
+
+certifications:
+  - id: isc2-cc
+    name: ISC2 CC – Certified in Cybersecurity
+    issuer: ISC2
+    date: "2026-08-08"
+    # tags: [cyber]   # uncomment to show only on cyber-targeted builds
+
+projects:
+  - id: tome
+    name: Tome
+    summary: Custom embedded e-reader and music player — RP2350 firmware, dual e-ink displays.
+    role: Solo
+    start: "2026-01"   # TODO: real start date
+    end: present
+    tags: [embedded, hardware, firmware]
+    draft: true        # flip to false once bullets are written
+    links:
+      - { label: Source, url: https://github.com/rien-et-la-reine }  # TODO: repo URL
+    highlights: []
+
+  - id: av-capstone
+    name: Autonomous Vehicle Capstone Project
+    role: Team Member
+    start: "2024-09"
+    end: "2025-01"
+    tags: [robotics, embedded]
+    highlights:
+      - id: av-nav-stack
+        text: >-
+          Deployed a ROS 2 and Nav2 navigation stack on an NVIDIA Jetson Orin
+          connected to a spinning LiDAR sensor mounted on a four-wheel electric
+          vehicle.
+      - id: av-costmaps
+        text: >-
+          Generated costmaps from live LiDAR data and used Nav2 to plan paths
+          from the vehicle's current position to specified target poses.
+
+  - id: smart-lock
+    name: Smart Door Lock & Access Management System
+    role: Team Lead
+    start: "2024-01"
+    end: "2024-04"
+    tags: [embedded, software, cyber, leadership]
+    highlights:
+      - id: lock-lead
+        text: >-
+          Led a team developing an NFC-based access-control system across
+          multiple Raspberry Pis, coordinating development and system
+          integration.
+        tags: [leadership]
+      - id: lock-controller
+        text: >-
+          Developed the Python central controller and SQLite database used to
+          associate NFC user IDs with authorized locations and validate access
+          requests.
+      - id: lock-firebase
+        text: >-
+          Configured Firebase and worked with the team to pass access requests
+          and authorization results between Raspberry Pi nodes.
+
+  - id: snow-rover
+    name: Autonomous Snow-Clearing Rover
+    role: Team Member
+    start: "2023-09"
+    end: "2023-12"
+    tags: [robotics, embedded]
+    highlights:
+      - id: rover-obstacles
+        text: >-
+          Used Python with infrared and ultrasonic sensors to implement obstacle
+          detection and avoidance for an autonomous rover.
+      - id: rover-nav
+        text: >-
+          Worked with the team on navigation logic that used rotary encoder
+          feedback to move through a bounded area while avoiding obstacles and
+          clearing targets.
+
+experience:
+  - id: ey-cyber
+    organization: Ernst & Young LLP (EY)
+    location: Toronto, ON
+    title: Cyber Engineering Co-op
+    # Repeated stints at one employer: list each term; the renderer
+    # decides how to print them ("May–Aug 2024; May–Aug 2023").
+    terms:
+      - { start: "2024-05", end: "2024-08" }
+      - { start: "2023-05", end: "2023-08" }
+    # Untagged on purpose: the job always appears; its bullets are tailored.
+    highlights:
+      - id: ey-engagements
+        text: >-
+          Supported cybersecurity engagements for government, public utility,
+          and commercial real estate clients, including OT governance and
+          Privileged Access Management (PAM).
+      - id: ey-pm
+        text: >-
+          Supported project management by tracking deadlines and deliverables,
+          scheduling meetings, maintaining project documentation, and preparing
+          client presentations.
+        tags: [consulting]
+      - id: ey-pam-research
+        text: >-
+          Researched Privileged Access Management (PAM) principles and prepared
+          and delivered technical presentations on PAM to clients.
+        tags: [cyber, consulting]
+
+# ---------------------------------------------------------------------------
+# Profiles: views over the content above. A build = (profile, output).
+#
+# Resolution, applied to every list (sections, entries, highlights, skills):
+#   1. drop items with draft: true, or whose `outputs` excludes this output
+#   2. if profile.tags is "*": keep everything
+#      else keep untagged items + items sharing a tag with profile.tags
+#   3. drop ids in `exclude`; force-add ids in `include` (beats step 2, not step 1)
+#   4. order entries by `order` (listed ids first), then newest start first
+#
+# Job-specific profiles (e.g. one per application) are better kept out of a
+# public repo: a file named after a company says where you're applying.
+# ---------------------------------------------------------------------------
+profiles:
+  full:
+    description: Everything; default for the web résumé.
+    tags: "*"
+    sections: [education, skills, certifications, projects, experience]
+
+  public:
+    description: The PDF hosted at eravas.ca/resume.pdf — no phone number.
+    extends: full
+    exclude: [phone]
+
+  embedded:
+    description: Embedded / firmware / hardware roles.
+    tags: [embedded, hardware, firmware, robotics]
+    sections: [education, skills, projects, experience, certifications]
+    order: [tome, av-capstone, smart-lock]
+
+  cyber:
+    description: Security engineering / OT security roles.
+    tags: [cyber, consulting, software]
+    sections: [education, certifications, experience, skills, projects]
+
+  fde:
+    description: Forward-deployed / solutions engineering — client-facing + building.
+    tags: [consulting, leadership, software, embedded]
+    sections: [education, experience, projects, skills, certifications]
