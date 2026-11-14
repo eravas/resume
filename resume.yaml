@@ -107,9 +107,9 @@ projects:
         tags: [hardware]
       - id: tome-sd
         text: >-
-          Wrote a bare-metal SPI SD card driver in C without third-party
-          libraries: initialization, single- and multi-block read/write, CRC
-          checking, and hot-removal handling through a single teardown path.
+          Wrote a low-level SPI SD card driver in C with the pico SDK and no 
+          other external libraries: initialization, single- and multi-block read/write,
+          CRC checking, and hot-removal handling through a single teardown path.
       - id: tome-storage
         text: >-
           Built the storage stack on a block-device abstraction, with a
