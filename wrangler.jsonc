@@ -1,0 +1,9 @@
+{
+  "name": "eravas-resume",
+  "compatibility_date": "2026-11-14",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash" // /resume → /resume/
+  },
+  "routes": [{ "pattern": "eravas.ca/resume*", "zone_name": "eravas.ca" }]
+}
