@@ -79,11 +79,14 @@ def skill_columns(groups: list[dict]) -> list[list[dict]]:
 
 
 def build_pdf(profile: str, out_dir: Path, warn) -> Path:
-    private = ROOT / "private.yaml"
-    data = resolve(ROOT / "resume.yaml", private if private.exists() else None,
-                   ROOT / "resume.schema.json", profile, "pdf", warn)
-
+    # The public PDF is deployed, so it never sees private.yaml.
+    # Tailored PDFs (written to out/) get it merged in.
     public = profile == "public"
+    private = ROOT / "private.yaml"
+    use_private = private.exists() and not public
+    data = resolve(ROOT / "resume.yaml", private if use_private else None,
+                   ROOT / "resume.schema.json", profile, "pdf", warn)
+                
     if public and any(c.get("kind") == "phone" for c in data["basics"]["contact"]):
         raise ResolveError(["the public PDF would contain a phone number; "
                             "exclude it in the 'public' profile"])
@@ -115,10 +118,10 @@ def build_pdf(profile: str, out_dir: Path, warn) -> Path:
 
 
 def build_web(profile: str, out_dir: Path, pdf_url: str | None, warn) -> None:
-    private = ROOT / "private.yaml"
-    data = resolve(ROOT / "resume.yaml", private if private.exists() else None,
+    # The web page is always public: build it from resume.yaml alone.
+    data = resolve(ROOT / "resume.yaml", None,
                    ROOT / "resume.schema.json", profile, "web", warn)
-
+                
     sections = data["sections"]
     bands = [{"id": "intro", "word": "Résumé"}] + [
         {"id": bid, "word": word}
