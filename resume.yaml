@@ -140,7 +140,7 @@ projects:
           from the vehicle's current position to specified target poses.
 
   - id: smart-lock
-    name: Smart Door Lock & Access Management System
+    name: Access Management System
     role: Team Lead
     start: "2024-01"
     end: "2024-04"
