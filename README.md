@@ -35,7 +35,7 @@ The web page uses `full`; the hosted PDF uses `public`.
 
 ## Private data
 
-`private.yaml` is gitignored and merged over `resume.yaml` when present (lists merge by `id`). It holds the phone number, the profile rule that keeps it out of the public PDF, and any profiles named after specific applications. See [`private.example.yaml`](private.example.yaml). The build refuses to write a public PDF that contains a phone number.
+`private.yaml` is gitignored and merged in only for tailored PDFs; the web page and public PDF are built from resume.yaml alone (lists merge by `id`). It holds the phone number, the profile rule that keeps it out of the public PDF, and any profiles named after specific applications. See [`private.example.yaml`](private.example.yaml). The build refuses to write a public PDF that contains a phone number.
 
 ## Building locally
 
