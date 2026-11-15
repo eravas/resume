@@ -8,10 +8,6 @@ basics:
       value: "000-000-0000"
       outputs: [pdf]
 
-profiles:
-  public:
-    exclude: [phone]   # the hosted PDF never carries the phone number
-
   # Profiles for specific applications live here, not in resume.yaml,
   # so the public repo doesn't reveal where you're applying.
   example-company:
