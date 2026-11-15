@@ -1,0 +1,20 @@
+# sample private.yaml (gitignored). Merged over resume.yaml at build time:
+# lists of items with an `id` merge by id, everything else is replaced.
+
+basics:
+  contact:
+    - id: phone
+      kind: phone
+      value: "000-000-0000"
+      outputs: [pdf]
+
+profiles:
+  public:
+    exclude: [phone]   # the hosted PDF never carries the phone number
+
+  # Profiles for specific applications live here, not in resume.yaml,
+  # so the public repo doesn't reveal where you're applying.
+  example-company:
+    extends: embedded
+    order: [tome]
+    exclude: [snow-rover]
