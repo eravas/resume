@@ -1,5 +1,7 @@
 # .gitignore
 dist/
+build/
+out/
 private.yaml
 .venv/
-__pychache__/
+__pycache__/
